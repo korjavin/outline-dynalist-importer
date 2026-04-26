@@ -92,7 +92,9 @@ class Outline:
                     )
                     time.sleep(wait)
                     continue
-                if 500 <= e.code < 600 and attempt < max_retries - 1:
+                # 5xx is a backend hiccup; 404 from Outline's edge during a
+                # restart is the LB's "no route" page, not a missing resource.
+                if (e.code == 404 or 500 <= e.code < 600) and attempt < max_retries - 1:
                     wait = min(30, 2 ** attempt)
                     print(
                         f"  HTTP {e.code}, retrying in {wait}s (attempt {attempt + 1}/{max_retries})",

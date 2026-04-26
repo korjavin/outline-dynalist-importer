@@ -92,6 +92,14 @@ class Outline:
                     )
                     time.sleep(wait)
                     continue
+                if 500 <= e.code < 600 and attempt < max_retries - 1:
+                    wait = min(30, 2 ** attempt)
+                    print(
+                        f"  HTTP {e.code}, retrying in {wait}s (attempt {attempt + 1}/{max_retries})",
+                        flush=True,
+                    )
+                    time.sleep(wait)
+                    continue
                 body_text = e.read().decode(errors="replace")
                 raise RuntimeError(f"{endpoint} -> HTTP {e.code}: {body_text}") from e
             except urllib.error.URLError:

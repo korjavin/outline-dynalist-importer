@@ -83,6 +83,8 @@ For each `.md` file:
 - Strips any YAML frontmatter (the `obsidian-outline` plugin leaves
   `outline_id` metadata behind on prior pushes; this gets stripped).
 - Converts every heading line `^#{n} text` to a bullet indented `n-1` levels.
+- Preserves body text under a heading as a child bullet one level deeper
+  (URLs and notes pandoc renders as paragraphs between headings).
 - Skips empty headings (Dynalist often leaves trailing blank items).
 - Creates the document under the right parent.
 

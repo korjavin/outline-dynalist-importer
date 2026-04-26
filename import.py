@@ -51,15 +51,22 @@ FRONTMATTER_RE = re.compile(r"^---\n.*?\n---\n", re.DOTALL)
 def convert(md: str) -> str:
     md = FRONTMATTER_RE.sub("", md, count=1)
     out = []
+    last_heading_depth = -1
     for line in md.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
         m = HEADING_RE.match(line)
-        if not m:
-            continue
-        depth = len(m.group(1)) - 1
-        text = m.group(2).strip()
-        if not text:
-            continue
-        out.append("  " * depth + "- " + text)
+        if m:
+            depth = len(m.group(1)) - 1
+            text = m.group(2).strip()
+            if not text:
+                continue
+            out.append("  " * depth + "- " + text)
+            last_heading_depth = depth
+        else:
+            depth = last_heading_depth + 1 if last_heading_depth >= 0 else 0
+            out.append("  " * depth + "- " + stripped)
     return "\n".join(out) + ("\n" if out else "")
 
 
